@@ -232,6 +232,8 @@ class Transaction
             throw new ResponseException($response);
         }
 
+        // save request to response
+        $response->request = $request;
         // resolve our initial promise
         return $response;
     }
@@ -248,6 +250,8 @@ class Transaction
         $location = Uri::resolve($request->getUri(), $response->getHeaderLine('Location'));
 
         $request = $this->makeRedirectRequest($request, $location);
+        // mark request as redirested
+        $request->redirected = true;
         $this->progress('redirect', array($request));
 
         if ($deferred->numRequests >= $this->maxRedirects) {
